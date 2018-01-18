@@ -6,7 +6,7 @@ hook微信语音，实现替换并发送指定语音
 
 确定需要hook的对象和方法，是AudioRecord而不是MediaRecorder。
 
-熟悉文件的流操作，已经AudioRecord的工作过程。
+熟悉文件的流操作，以及AudioRecord的工作过程。
 
 Xposed的使用，注意是在before里面还是after中操作，另外这两者之间的操作也得掌握透彻。
 
