@@ -17,6 +17,11 @@
             </intent-filter>
         </activity>
 
+        <provider
+            android:exported="true"
+            android:authorities="com.example.admin.hookwxyydemo.provider"
+            android:name=".MyProvider"
+            />
 
         <!--Xposed模块配置-->
         <meta-data
