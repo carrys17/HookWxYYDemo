@@ -16,3 +16,7 @@ Xposed的使用，注意是在before里面还是after中操作，另外这两者
 1、通过控制一个在进程间通信的变量，把需要分开编译的代码全部整合在一起
 
 2、模拟器上的hook需要给微信一个AudioRecord变量，并在微信语音输入的开始和结束时调用相应的操作
+
+###  【2018.1.20】实现在模拟器中替换语音
+
+由于模拟器点击录制语音时弹不出话筒，前两天的例子是自己实现一个AudioRecord，所以这次直接hook微信的AudioRecord的startRecording方法，并设置返回值，让微信的录制流程不能正常执行。然后hookgetRecordState方法，自己维护AudioRecord的开始和停止。在startRecording中设为starting状态，在stop时设置为stopped状态，这样微信就可以正常执行read函数了，我们在read中再hook改变发送的语音，即可实现在模拟器中替换发送的语音了。
