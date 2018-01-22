@@ -28,3 +28,9 @@ Xposed的使用，注意是在before里面还是after中操作，另外这两者
 1、int pushAudio(String pcmfile);//使得每次微信发语音 都发出指定的pcm语音
 
 2、int recordAudio(String pcmfile);//将微信录音 录到指定目录下
+
+### 【2018.1.22】 自定义类继承XC_MethodHook，提高代码简洁性
+
+1、将文件父目录的权限修改的从read中移动到stop操作
+
+2、去掉多余的代码， 在stop删除临时文件
