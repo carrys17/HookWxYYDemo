@@ -13,7 +13,7 @@
 //
 //public class MainActivity extends AppCompatActivity {
 //
-//    int mFlag = -1;
+//    int sMode = -1;
 //
 //    ContentResolver mResolver;
 //    Uri uri = Uri.parse("content://com.example.admin.hookwxyydemo.provider");
