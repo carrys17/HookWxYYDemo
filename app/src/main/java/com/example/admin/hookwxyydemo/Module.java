@@ -113,16 +113,16 @@ public class Module implements IXposedHookLoadPackage {
 
                 Runtime.getRuntime().exec("su");
 
-                // TODO
-                recordAudio("/data/local/tmp/zzz.pcm");
+                
+//                recordAudio("/data/local/tmp/zzz.pcm");
 //                    pushAudio("/data/local/tmp/1.pcm");
 
 
-//                if (sMode == 1){
-//                    recordAudio(sRecordPcmFileName);
-//                }else if(sMode == 0){
-//                    pushAudio(sSendPcmFileName);
-//                }
+                if (sMode == 1){
+                    recordAudio(sRecordPcmFileName);
+                }else if(sMode == 0){
+                    pushAudio(sSendPcmFileName);
+                }
 
                 Log.i(TAG, "handleLoadPackage: sMode ---- " + sMode);
 
