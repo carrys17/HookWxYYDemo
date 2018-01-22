@@ -20,3 +20,11 @@ Xposed的使用，注意是在before里面还是after中操作，另外这两者
 ###  【2018.1.20】实现在模拟器中替换语音
 
 由于模拟器点击录制语音时弹不出话筒，前两天的例子是自己实现一个AudioRecord，所以这次直接hook微信的AudioRecord的startRecording方法，并设置返回值，让微信的录制流程不能正常执行。然后hookgetRecordState方法，自己维护AudioRecord的开始和停止。在startRecording中设为starting状态，在stop时设置为stopped状态，这样微信就可以正常执行read函数了，我们在read中再hook改变发送的语音，即可实现在模拟器中替换发送的语音了。
+
+
+
+### 【2018.1.22】 Xposed模块中封装两个Api接口
+
+1、int pushAudio(String pcmfile);//使得每次微信发语音 都发出指定的pcm语音
+
+2、int recordAudio(String pcmfile);//将微信录音 录到指定目录下
