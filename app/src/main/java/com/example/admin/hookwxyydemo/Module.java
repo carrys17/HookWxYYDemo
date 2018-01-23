@@ -1,4 +1,4 @@
-﻿package com.example.admin.hookwxyydemo;
+package com.example.admin.hookwxyydemo;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -104,28 +105,25 @@ public class Module implements IXposedHookLoadPackage {
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-
         try {
-
 
             if (loadPackageParam.packageName.equals("com.tencent.mm") && m_isInit==false) {
                 Log.i(TAG, "handleLoadPackage: 进来了com.tencent.mm方法");
 
                 Runtime.getRuntime().exec("su");
 
-                
-//                recordAudio("/data/local/tmp/zzz.pcm");
+                // TODO
+                recordAudio("/data/local/tmp/zzz.pcm");
 //                    pushAudio("/data/local/tmp/1.pcm");
 
 
-                if (sMode == 1){
-                    recordAudio(sRecordPcmFileName);
-                }else if(sMode == 0){
-                    pushAudio(sSendPcmFileName);
-                }
+//                if (sMode == 1){
+//                    recordAudio(sRecordPcmFileName);
+//                }else if(sMode == 0){
+//                    pushAudio(sSendPcmFileName);
+//                }
 
                 Log.i(TAG, "handleLoadPackage: sMode ---- " + sMode);
-
 
 
                 // hook  startRecording 方法，当发送指定语音时需要hook这个函数,将微信的流程打断，自己维护整个发送过程
@@ -150,28 +148,17 @@ public class Module implements IXposedHookLoadPackage {
 
 
                 // hook  release 方法，当发送指定语音时需要hook这个函数，打断微信
-                XposedHelpers.findAndHookMethod("android.media.AudioRecord", loadPackageParam.classLoader, "release",
-                        new XC_MethodHook() {
-                            @Override
-                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                                if (sMode == 0) {
-                                    Log.i(TAG, "AudioRecord # release beforeHookedMethod ");
-                                    Object o = new Object();
-                                    param.setResult(o);
-                                }
-                            }
-                        });
+                XposedHelpers.findAndHookMethod("android.media.AudioRecord", loadPackageParam.classLoader,
+                        "release", new ReleaseMethodHook());
+
 
                 m_isInit = true;
-
             }
 
         } catch (Exception e) {
             Log.i(TAG, "handleLoadPackage Exception: " + e.getMessage());
             e.printStackTrace();
         }
-
-
     }
 
 
@@ -222,6 +209,17 @@ public class Module implements IXposedHookLoadPackage {
         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
             try {
                 if (sMode == 1) {
+
+                    File ff = new File(sRecordPcmFileName);
+                    if (ff.exists()){
+                        ff.delete();
+                    }
+                    // 问题就出在这，在这里修改父目录的权限就会报错,将这个操作放在stop方法也就是copy到指定的目录前再操作
+                    String  fp = ff.getParent();
+                    Log.i(TAG, "父目录 : "+fp);
+                    execCommand("chmod 777 "+fp,true);
+
+
                     FileOutputStream fileOutputStream ;
                     // 拿到当前的AudioRecord对象
                     AudioRecord record = (AudioRecord) param.thisObject;
@@ -263,6 +261,7 @@ public class Module implements IXposedHookLoadPackage {
                         for (int i = 0; i < bytes.length; i++) {
                             bytes[i] = buffer[i + offset];
                         }
+
                         // 将byte[] 写到临时的语音文件中,这样既可拿到当前语音输入的内容
                         fileOutputStream.write(bytes);
                     }
@@ -319,7 +318,6 @@ public class Module implements IXposedHookLoadPackage {
                         fos.close();
                         mFosMap.remove(record);
 
-
                         // 修改指定输出文件的父目录权限。
                         File file = new File(sRecordPcmFileName);
                         String parentPath = file.getParent();
@@ -330,8 +328,9 @@ public class Module implements IXposedHookLoadPackage {
                         execCommand("chmod 777 /data/local/tmp/" + pcmFileName + ".pcm", true);
                         execCommand("\\cp /data/local/tmp/" + pcmFileName + ".pcm  " + sRecordPcmFileName, true);
                         Log.i(TAG, "命令 : \\cp /data/local/tmp/" + pcmFileName + ".pcm  " + sRecordPcmFileName);
-			execCommand("rm /data/local/tmp/" + pcmFileName + ".pcm",true);
                         execCommand("chmod 777 " + sRecordPcmFileName, true);
+                        // 删除临时文件
+                        execCommand("rm /data/local/tmp/" + pcmFileName + ".pcm", true);
 
                         // 清理map
                         mPcmFileMap.remove(record);
@@ -406,6 +405,18 @@ public class Module implements IXposedHookLoadPackage {
                 } catch (Exception e) {
                     Log.i(TAG, "AudioRecord # getRecordingState beforeHookedMethod 出错: " + e.getMessage());
                 }
+            }
+        }
+    }
+
+    // release方法，打断微信的
+    private class ReleaseMethodHook extends XC_MethodHook{
+        @Override
+        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+            if (sMode == 0) {
+                Log.i(TAG, "AudioRecord # release beforeHookedMethod ");
+                Object o = new Object();
+                param.setResult(o);
             }
         }
     }
