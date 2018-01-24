@@ -1,30 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.admin.hookwxyydemo.MainActivity">
 
-    <Button
-        android:id="@+id/id_record"
+
+    <TextView
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="录制"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/id_replace"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="25dp"
-        />
+        android:layout_alignLeft="@+id/radioGroup"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/radioGroup"
+        android:layout_marginTop="12dp"
+        android:textSize="16sp"
+        android:text="录制/发送指定语音(先录制后发送，可重复录制)" />
 
-    <Button
-        android:id="@+id/id_replace"
+    <RadioGroup
+        android:layout_below="@id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="替换"
-        app:layout_constraintLeft_toRightOf="@id/id_record"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/id_record"
-        />
+        android:layout_marginLeft="27dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="13dp"
+        android:id="@+id/radioGroup">
 
-</android.support.constraint.ConstraintLayout>
+        <RadioButton
+            android:id="@+id/radioButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="第一条(1.pcm)" />
+
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="第二条(2.pcm)" />
+
+        <RadioButton
+            android:id="@+id/radioButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="第三条(3.pcm)" />
+
+        <RadioButton
+            android:id="@+id/radioButton4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="第四条(4.pcm)" />
+
+        <RadioButton
+            android:id="@+id/radioButton5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="第五条(5.pcm)" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/radioGroup"
+        android:layout_alignStart="@+id/radioGroup"
+        android:layout_below="@+id/radioGroup"
+        android:layout_marginTop="19dp"
+        android:text="录制" />
+
+    <Button
+        android:id="@+id/send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/record"
+        android:layout_marginLeft="11dp"
+        android:layout_marginStart="11dp"
+        android:layout_toEndOf="@+id/radioGroup"
+        android:layout_toRightOf="@+id/radioGroup"
+        android:text="发送" />
+
+</RelativeLayout>

@@ -11,6 +11,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+
+
+
+
 /**
  * Created by admin on 2018/1/18.
  */
@@ -20,6 +24,11 @@ public class MyProvider extends ContentProvider {
 
     private static final String TAG = "MyProvider";
 
+    private int mMode = -1;
+
+    private String mPath = "";
+
+
     @Override
     public boolean onCreate() {
         return false;
@@ -28,16 +37,20 @@ public class MyProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        SharedPreferences sp  = getContext().getSharedPreferences("tmp", Context.MODE_WORLD_READABLE);
-        int flag = sp.getInt("flag",-1);
+//        SharedPreferences sp  = getContext().getSharedPreferences("tmp", Context.MODE_WORLD_READABLE);
+//        int mode = sp.getInt("mode",-1);
+//        String path = sp.getString("path","");
 
         Bundle bundle = new Bundle();
-        bundle.putInt("flag",flag);
-        Log.i(TAG, "query: 查询 -- i = "+ flag);
+        bundle.putInt("mode",mMode);
+        bundle.putString("path",mPath);
+        Log.i(TAG, "查询query:  mMode -- "+mMode +", mPath -- "+mPath);
+
 
         MyCursor cursor = new MyCursor();
         cursor.setExtras(bundle);
         return cursor;
+//        return null;
     }
 
     @Nullable
@@ -49,12 +62,20 @@ public class MyProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        int flag = values.getAsInteger("flag");
-        SharedPreferences sp = getContext().getSharedPreferences("tmp",Context.MODE_WORLD_READABLE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putInt("flag",flag);
-        editor.commit();
-        Log.i(TAG, "insert: 插入数据 -- i = "+ flag);
+        int mode = values.getAsInteger("mode");
+        String path = values.getAsString("path");
+//        SharedPreferences sp = getContext().getSharedPreferences("tmp",Context.MODE_WORLD_READABLE);
+//        SharedPreferences.Editor editor = sp.edit();
+//        editor.putInt("mode",mode);
+//        editor.putString("path",path);
+//        editor.commit();
+        Log.i(TAG, "insert: 插入数据 -- mode = "+ mode);
+        Log.i(TAG, "insert: 插入数据 -- path = "+ path);
+
+
+        mMode = mode;
+        mPath = path;
+        Log.i(TAG, "插入insert: mMode -- "+mMode +", mPath -- "+mPath);
         return null;
     }
 
@@ -65,6 +86,18 @@ public class MyProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
+        int mode = values.getAsInteger("mode");
+        String path = values.getAsString("path");
+//        SharedPreferences sharedPreferences  = getContext().getSharedPreferences("tmp", Context.MODE_WORLD_READABLE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putInt("mode",mode);
+//        editor.putString("path",path);
+//        editor.commit();
+//        Log.i(TAG,"contentprovider更新数据 mode = "+mode + ",  path = "+path);
+
+        mMode = mode;
+        mPath = path;
+        Log.i(TAG, "更新update: mMode -- "+mMode +", mPath -- "+mPath);
         return 0;
     }
 }
