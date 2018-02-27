@@ -7,11 +7,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import de.robv.android.xposed.XC_MethodHook;
+
 /**
  * Created by admin on 2017/12/21.
  */
 
-public class CommandUtils {
+public class CommandUtils{
     public static final String TAG = "CommandExecution";
 
     public final static String COMMAND_SU       = "su";

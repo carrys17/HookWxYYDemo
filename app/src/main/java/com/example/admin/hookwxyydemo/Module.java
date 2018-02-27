@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AndroidAppHelper;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.AudioFormat;
@@ -91,9 +92,12 @@ public class Module implements IXposedHookLoadPackage {
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         try {
 
-            if (loadPackageParam.packageName.equals("com.tencent.mm") ) {
+            if ( loadPackageParam.packageName.equals("com.tencent.mm") ) {
                 Log.i(TAG, "handleLoadPackage: 进来了com.tencent.mm方法");
 
+                AndroidAppHelper.currentApplication();
+
+                AndroidAppHelper.currentApplicationInfo();
                 Runtime.getRuntime().exec("su");
 
                 // 获取到当前进程的上下文
@@ -105,6 +109,8 @@ public class Module implements IXposedHookLoadPackage {
                             applicationContext = (Context) param.getResult();
                             XposedBridge.log("得到上下文");
 
+
+
                             if (applicationContext!=null){
                                 Log.i(TAG, "applicationContext 不为null ");
                                 mResolver = applicationContext.getContentResolver();
@@ -114,6 +120,7 @@ public class Module implements IXposedHookLoadPackage {
                 }catch (Throwable throwable){
                     XposedBridge.log("获取上下文失败 "+throwable);
                 }
+
 
 
 
@@ -373,6 +380,7 @@ public class Module implements IXposedHookLoadPackage {
         @Override
         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
             try {
+
                 getCurrentModeAndPath();
                 if (mMode == 0) {
                     // 修改要发送的语音文件的权限
