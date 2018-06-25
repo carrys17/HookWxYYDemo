@@ -149,6 +149,23 @@ public class Module implements IXposedHookLoadPackage {
                 XposedHelpers.findAndHookMethod("android.media.AudioRecord", loadPackageParam.classLoader,
                         "release", new ReleaseMethodHook());
 
+                // --- 构造方法int audioSource, int sampleRateInHz, int channelConfig, int audioFormat,
+                //            int bufferSizeInBytes
+                XposedHelpers.findAndHookConstructor("android.media.AudioRecord", loadPackageParam.classLoader,
+                        int.class, int.class, int.class, int.class, int.class, new XC_MethodHook() {
+                            @Override
+                            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                                Log.i(TAG, "AudioRecord # 构造方法beforeHookedMethod: ");
+                                //  修改
+                                param.args[0] = 1;
+                                param.args[1] = 16000;
+                                param.args[2] = 2;
+                                param.args[3] = 2;
+                                param.args[4] = 12800;
+                                
+                            }
+                            
+                        });
 
             }
 
