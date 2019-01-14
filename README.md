@@ -2,6 +2,8 @@
 
 hook微信语音，实现替换并发送指定语音
 
+文章地址：https://www.jianshu.com/p/562d15ddc61c
+
 ### 【2018.1.17】初步提交
 
 确定需要hook的对象和方法，是AudioRecord而不是MediaRecorder。
